@@ -5,4 +5,4 @@ class Registradores():
 		self.indice = 0
 
 	def __str__(self):
-		return 'Indice = {}\tStatus = {}\tValor =  {}'
+		return 'Indice = {}\tStatus = {}\tValor =  {}'.format(self.indice,self.status,self.valor)
