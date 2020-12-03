@@ -1,0 +1,7 @@
+lw F1,25(10)
+lw F2,20
+lw F3,15
+add F4,F2,F3
+sub F3,F3,F2
+mul F4,F3,F1
+sw F4,40(20) 
