@@ -5,30 +5,61 @@ class Instrucoes():
 
 	def __init__(self,linha):
 		linha = linha.split()
-		##pega o operator
 		self.op = linha[0]
-		##pega os registradores
-		self.valores = linha[1].split(',')
-		##lista de valores
-		self.vLista = []
-		for valor in self.valores:
-			##Identifica um registrador,caso o valor comece com 0.
-			if valor.startswith('F'):
-				aux = Registradores()
-				aux.indice = int(valor[1:])
-				self.vLista.append(aux)
-			# else if valor.endswith(')'):
-			# 	valor.split('')
-			# else:
-			# 	hexadecimal = int(valor,16)
-			# 	self.vLista.append(hexadecimal)
-		# if registradores[0] not in Config.Desvios and registradores[0] != 'sw':
-		# 	self.rd = registradores[0]
-		# 	if registradores[1] != ''
-		# 	self.rs = registradores[1]
+		self.ciclos = Config.Tempo.get(self.op.lower())
+		self.despacho = None
+		self.execCompleta = None
+		self.escrita = None
+		self.rd = None
+		self.rs = None
+		self.rt = None
+		self.imm = None
+		self.Tipo(linha[1].split(',')) 
+
+	def Tipo(self,string):
+		if self.op.lower() in Config.Aritmeticas:
+			self.tipo = 'Ari'	
+			for idx,substring in enumerate(string):
+				if idx == 0:
+					self.rd = Registradores(substring[1:])
+				elif idx == 1:
+					self.rs = Registradores(substring[1:])
+				else:
+					if substring.startswith('F'):
+						self.rt = Registradores(substring[1:])
+					else:
+						self.imm = substring
+		elif self.op.lower() in Config.Logicas:
+			self.tipo = 'Log'
+			for idx,substring in enumerate(string):
+				if idx == 0:
+					self.rd = Registradores(substring[1:])
+				elif idx == 1:
+					self.rs = Registradores(substring[1:])
+				else:
+					self.rt = Registradores(substring[1:])
+		elif self.op.lower() in Config.Desvios:
+			self.tipo = 'Dvo'
+			for idx,substring in enumerate(string):
+				if idx == 0 and self.op.lower() != 'j':
+					self.rs = Registradores(substring[1:])
+				elif idx == 0 and self.op.lower() =='j':
+					self.imm = substring
+				elif idx == 1:
+					self.rt = Registradores(substring[1:])
+				else:
+					self.imm = substring
+		elif self.op.lower() in Config.Memoria:
+			self.tipo = 'Mem'
+			for idx,substring in enumerate(string):
+				if idx == 0 and self.op.lower() == 'lw':
+					self.rd = Registradores(substring[1:])
+				elif idx == 0 and self.op.lower() == 'sw':
+					self.rs = Registradores(substring[1:])
+				elif idx == 1:
+					self.imm = substring
+
 	def __repr__(self):
-		return 'Operacao {}\tRegistradores{}'.format(self.op,self.valores)
-
-
+		return '{}\n---RD {}\tRS {}\tRT {}\tIMM {}'.format(self.tipo,self.rd,self.rs,self.rt,self.imm)
 
 
