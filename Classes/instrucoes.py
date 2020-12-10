@@ -55,9 +55,11 @@ class Instrucoes():
 				if idx == 0 and self.op.lower() == 'lw':
 					self.rd = Registradores(substring[1:])
 				elif idx == 0 and self.op.lower() == 'sw':
-					self.rs = Registradores(substring[1:])
+					self.rt = Registradores(substring[1:])
 				elif idx == 1:
-					self.imm = substring
+					#print(substring[3:5])
+					self.rs = Registradores(substring[4:5])
+					self.imm = substring[0:2]
 
 	def __repr__(self):
 		return '{}\n---RD {}\tRS {}\tRT {}\tIMM {}'.format(self.op,self.rd,self.rs,self.rt,self.imm)

@@ -25,23 +25,26 @@ def CheckBusy(listaEr,op):
 	if op == 'ADD' or op == 'SUB':
 		for estRes in listaEr[0:8]:
 			if estRes.busy is False:
+				estRes.op = op
 				return estRes
 			else:
 				pass
 	elif op == 'MUL' or op == 'DIV':
 		for estRes in listaEr[8:16]:
 			if estRes.busy is False:
+				estRes.op = op
 				return estRes
-	else:
+	elif op =='LW' or op == 'SW':
 		for estRes in listaEr[16:24]:
 			if estRes.busy is False:
+				estRes.op = op
 				return estRes
 
 def Despacho(listaInstr,eR):
 	for instrucao in listaInstr:
+		ErRelacionada = CheckBusy(eR,instrucao.op)
  		##UPF
-		if instrucao.tipo == 'Ari':
-			ErRelacionada = CheckBusy(eR,instrucao.op) 
+		if instrucao.tipo == 'Ari': 
 			if instrucao.rs.qi != 0:
 				ErRelacionada.qj = instrucao.rs.qi
 			else:
@@ -53,7 +56,32 @@ def Despacho(listaInstr,eR):
 				ErRelacionada.vk = instrucao.rs.valor
 				ErRelacionada.qk = 0
 			ErRelacionada.busy = True
-			instrucao.rd = ErRelacionada
+			instrucao.rd.qi = ErRelacionada.tipo
+		elif instrucao.tipo == 'Mem':
+			#LOAD
+			if instrucao.op == 'LW':
+				if instrucao.rs.qi != 0:
+					ErRelacionada.qj = instrucao.rs.qi
+				else:
+					ErRelacionada.vj = instrucao.rs.valor
+					ErRelacionada.qj = 0
+				ErRelacionada.a = instrucao.imm
+				ErRelacionada.busy = True
+				instrucao.rd.qi = ErRelacionada.tipo
+			#STORE
+			if instrucao.op == 'SW':
+				if instrucao.rs.qi != 0:
+					ErRelacionada.qj = instrucao.rs.qi
+				else:
+					ErRelacionada.vj = instrucao.rs.valor
+					ErRelacionada.qj = 0
+				if instrucao.rt.qi != 0:
+					ErRelacionada.qk = instrucao.rs.qi
+				else:
+					ErRelacionada.vk = instrucao.rs.valor
+					ErRelacionada.qk = 0
+				ErRelacionada.a = instrucao.imm
+				ErRelacionada.busy = True
 	for item in eR:
 		print (item)
 
