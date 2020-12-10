@@ -22,33 +22,35 @@ def estacoesR():
 	return mat
 
 def CheckBusy(listaEr,op):
-	for estRes in listaEr:
-		#Seleciona somente as ER que possuem a OP(por exemplo, as ER relacionadas a Mult ou add)
-		#POR ENQUANTO RETORNA UM NONE TYPE PARA O CALLER, TEM Q ARRUMAR.(POR ISSO A CHECAGEM NO DESPACHO)
-		if estRes.tipo[:-1] == op:
-			if estRes.busy == False:
-				return estRes 
+	if op == 'MUL' or op == 'DIV':
+		for estRes in listaEr[8:16]:
+			if estRes.busy is False:
+				return estRes
+	elif op == 'ADD' or 'SUB':
+		for estRes in listaEr[0:8]:
+			if estRes.busy is False:
+				return estRes
+	else:
+		for estRes in listaEr[16:24]:
+			if estRes.busy is False:
+				return estRes
 
 def Despacho(listaInstr,eR):
 	for instrucao in listaInstr:
  		##UPF
 		if instrucao.tipo == 'Ari':
-			ErRelacionada = CheckBusy(eR,instrucao.op)
-			##CHECAGEM DESNECESSARIA, PRECISA DE FIX.
-			if isinstance(ErRelacionada,EstRes):
-				a = ErRelacionada 
+			ErRelacionada = CheckBusy(eR,instrucao.op) 
 			if instrucao.rs.qi != 0:
-				a.qj = instrucao.rs.qi
+				ErRelacionada.qj = instrucao.rs.qi
 			else:
- 				#print(ErRelacionada)
-				a.vj = instrucao.rs.valor
-				a.qj = 0
+				ErRelacionada.vj = instrucao.rs.valor
+				ErRelacionada.qj = 0
 			if instrucao.rt.qi != 0:
-				a.qk = instrucao.rs.qi
+				ErRelacionada.qk = instrucao.rs.qi
 			else:
-				a.vk = instrucao.rs.valor
-				a.qk = 0
-			a.busy = True
+				ErRelacionada.vk = instrucao.rs.valor
+				ErRelacionada.qk = 0
+			ErRelacionada.busy = True
 			instrucao.rd = ErRelacionada
 	for item in eR:
 		print (item)
