@@ -22,12 +22,14 @@ def estacoesR():
 	return mat
 
 def CheckBusy(listaEr,op):
-	if op == 'MUL' or op == 'DIV':
-		for estRes in listaEr[8:16]:
+	if op == 'ADD' or op == 'SUB':
+		for estRes in listaEr[0:8]:
 			if estRes.busy is False:
 				return estRes
-	elif op == 'ADD' or 'SUB':
-		for estRes in listaEr[0:8]:
+			else:
+				pass
+	elif op == 'MUL' or op == 'DIV':
+		for estRes in listaEr[8:16]:
 			if estRes.busy is False:
 				return estRes
 	else:
