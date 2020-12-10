@@ -60,6 +60,6 @@ class Instrucoes():
 					self.imm = substring
 
 	def __repr__(self):
-		return '{}\n---RD {}\tRS {}\tRT {}\tIMM {}'.format(self.tipo,self.rd,self.rs,self.rt,self.imm)
+		return '{}\n---RD {}\tRS {}\tRT {}\tIMM {}'.format(self.op,self.rd,self.rs,self.rt,self.imm)
 
 

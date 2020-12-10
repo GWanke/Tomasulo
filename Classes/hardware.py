@@ -38,6 +38,25 @@ class Memoria():
 	def reset(self):
  		self.data = [0 for i in range(len(self.data))]
 
-# class UF:
-# 	def __init__(self):
+
+class _UF:
+	def __init__(self):
+		self.resultado = 0
+		self.busy = False
+		self.cicloFinal = 0
+
+
+	def reset(self):
+		self.resultado = 0
+		self.busy = False
+		self.cicloFinal = 0
+
+class Adder(_UF):
+	def __init__(self):
+		super().__init__()
+
+
+class Multiplier(_UF):
+	def __init__(self):
+		super().__init__()
 
