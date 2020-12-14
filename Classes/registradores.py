@@ -10,4 +10,5 @@ class Registradores():
 		self.qi = 0		
 
 	def __str__(self):
-		return 'Indice = F{}\tValor = {}\tQi = {}\t,Mem = {}\n'.format(self.indice,self.valor,self.qi,self.EndMem)
+		return '{}'.format(self.qi)
+

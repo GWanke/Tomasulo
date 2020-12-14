@@ -59,7 +59,7 @@ class Instrucoes():
 				elif idx == 1:
 					#print(substring[3:5])
 					self.rs = Registradores(substring[4:5])
-					self.imm = substring[0:2]
+					self.imm = substring[0:2]+'+'+substring[3:5]
 
 	def __repr__(self):
 		return '{}\n---RD {}\tRS {}\tRT {}\tIMM {}'.format(self.op,self.rd,self.rs,self.rt,self.imm)

@@ -40,23 +40,38 @@ class Memoria():
 
 
 class _UF:
-	def __init__(self):
+	def __init__(self,rd = None,rs = None,rt = None, imm = None ):
 		self.resultado = 0
 		self.busy = False
+		self.cicloInicial = 0
 		self.cicloFinal = 0
-
+		self.rs = rs
+		self.rt = rt
+		self.imm = imm
+		self.rd = rd
 
 	def reset(self):
 		self.resultado = 0
 		self.busy = False
+		self.cicloInicial = 0
 		self.cicloFinal = 0
+		self.rs = None
+		self.rt = None
+		self.imm = None
+		self.rd = None
+	
+	def __repr__(self):
+		return '{}\t{}\t{}\t'.format(self.cicloInicial,self.cicloFinal,self.busy)
 
 class Adder(_UF):
 	def __init__(self):
 		super().__init__()
-
+		 
 
 class Multiplier(_UF):
 	def __init__(self):
 		super().__init__()
 
+class MemoUnit(_UF):
+	def __init__(self):
+		super().__init__()
