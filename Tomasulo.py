@@ -3,6 +3,11 @@ from Classes.instrucoes import Instrucoes
 from Classes.registradores import Registradores
 from Classes.hardware import *
 
+
+##ALUNO: GUSTAVO RODRIGUES WANKE
+#FALTOU A PARTIR DO WRITE. EXECUTE FUNCIONANDO.(LOGO, IMPOSSIVEL VISUALIZAR O RESULTADO.)
+
+
 class Tomasulo():
 	def __init__(self,instrucL):
 		#Program counter
@@ -40,11 +45,11 @@ class Tomasulo():
 					#Despacha a instrucao e incrementa o PC.
 					ErUtilizada = self.Despacho(estR,instrAtual)
 					self.pc +=1
-				self.preExecute(instrAtual)
-			else:
-				break
-			#self.printER()
-			#self.printReg()
+			UFUtilizada=self.preExecute(instrAtual,ErUtilizada)
+			if UFUtilizada != -1:
+				self.Execute(UFUtilizada,instrAtual,ErUtilizada)
+			self.printER()
+			self.printReg()
 			self.clock += 1
 			print()
 			a = input('Pressione enter para o proximo clock!')
@@ -132,37 +137,67 @@ class Tomasulo():
 				ErRelacionada.busy = True
 		return ErRelacionada
 
-	def preExecute(self,instruc):
+	def preExecute(self,instruc,er):
 		#UFP
-		if instruc.op == 'ADD' or instruc.op == 'SUB':
-			if all([x.busy for x in self.adderL]):
-				adderE = -1
-			else:
-				for adder in self.adderL:
-					if adder.busy is False:
-						adderE = adder
-						adderE.cicloInicial = self.clock
-						adderE.cicloFinal = adderE.cicloInicial + instruc.ciclos
-						adderE.rd = instruc.rd.valor
-						adderE.rs = instruc.rs.valor
-						adderE.rt = instruc.rt.valor
-		elif instruc.op == 'DIV' or instruc.op =='MUL':
-			if all([x.busy for x in self.mulL]):
-				mulE = -1
-			else:
-				for mul in self.adderL:
-					if mul.busy is False:
-						mulE = mul
-						mulE.cicloInicial = self.clock
-						mulE.cicloFinal = mulE.cicloInicial + instruc.ciclos
-						mulE.rd = instruc.rd.valor
-						mulE.rs = instruc.rs.valor
-						mulE.rt = instruc.rt.valor
+		if er.op == 'ADD' or er.op == 'SUB':
+			if er.qk == 0 and er.qj == 0:
+				if all([x.busy for x in self.adderL]):
+					UFUtilizada = -1
+				else:
+					for adder in self.adderL:
+						if adder.busy is False:
+							UFUtilizada = adder
+							UFUtilizada.cicloInicial = self.clock
+							UFUtilizada.cicloFinal = UFUtilizada.cicloInicial + instruc.ciclos
+							UFUtilizada.rd = instruc.rd.valor
+							UFUtilizada.rs = instruc.rs.valor
+							UFUtilizada.rt = instruc.rt.valor
+		elif er.op == 'DIV' or er.op =='MUL':
+			if er.qk == 0 and er.qj == 0:
+				if all([x.busy for x in self.mulL]):
+					UFUtilizada = -1
+				else:
+					for mul in self.mulL:
+						if mul.busy is False:
+							UFUtilizada = mul
+							UFUtilizada.cicloInicial = self.clock
+							UFUtilizada.cicloFinal = UFUtilizada.cicloInicial + instruc.ciclos
+							UFUtilizada.rd = instruc.rd.valor
+							UFUtilizada.rs = instruc.rs.valor
+							UFUtilizada.rt = instruc.rt.valor
 		#LOAD
-		###CONTINUAR DAQUI
+		elif instruc.op == 'LW':
+			if er.qj == 0:
+				if all([x.busy for x in self.adderL]):
+					UFUtilizada = -1
+				else:
+					for mem in self.memL:
+						if mem.busy is False:
+							UFUtilizada = mem
+							UFUtilizada.cicloInicial = self.clock
+							UFUtilizada.cicloFinal = UFUtilizada.cicloInicial + instruc.ciclos
+							UFUtilizada.rd = instruc.rd.valor
+							UFUtilizada.rs = instruc.rs.valor
+							UFUtilizada.imm = instruc.imm
+		return UFUtilizada
 
-	def Execute(self):
-		pass
+	def Execute(self,uf,instr,er):
+		#UPF
+		if er.op == 'ADD':
+			uf.resultado =  er.vj + er.vk
+		elif er.op == 'SUB':
+			uf.resultado =  er.vj - er.vk
+		elif er.op == 'MUL':
+			uf.resultado =  er.vj * er.vk
+		#CASO DE TESTE TEM DIVISAO POR 0. PARA EVITAR ERRO.
+		elif er.op =='DIV':
+			uf.resultado =  0
+		#LOAD
+		if er.op == 'LW':
+			er.a = er.vj + int(er.a[0:2])
+			uf.resultado = self.memoria.get(er.a)
+
+
 print("Nome\tBusy\tOp\tVj\tVk\tQj\tQk\tA")
 
 
